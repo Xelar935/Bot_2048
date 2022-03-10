@@ -24,15 +24,15 @@
 #define false 0
 #define true 1
 
-#define BOARD_ORD 4         // nombre de lignes
-#define BOARD_ABS 4         // nombre de colonnes
+#define BOARD_ORD 5         // nombre de lignes
+#define BOARD_ABS 5         // nombre de colonnes
 #define CASE_VIDE 0
 #define NOMBRE_ESSAI 170    // permet de choisir le nombre de partie que le bot va simuler a chaque mouvement pour pouvoir gagné
 #define VERBOSE 0           // a utiliser pour afficher en detaille les etapes des déplacements avec 2 niveaux
 
 // ############################### A faire #####################################
   //             revoir les niveau de VERBOSE pour l'afichage
-  //     regader pour les plateau asymetrique (les bug des mouvements)          <<< seulement si j'ai le tps
+  //     regader pour les plateau asymetrique (les bug des mouvements)
   //
 // #############################################################################
 
@@ -253,7 +253,7 @@ bool Test_Victoire(Plateau plat){
 // fonction qui test si deux plateau son identique
 bool Test_Identique(Plateau plat1, Plateau plat2){
   int compteur = 0;
-  bool identique;
+  bool identique = false;
 
   for (int ord = 0; ord < BOARD_ORD; ord++) {
     for (int abs = 0; abs < BOARD_ABS; abs++) {
@@ -506,11 +506,11 @@ Bloquer Test_Mouvement_Bloquer(Plateau plat){
 
   plat_test = Mouvement_Gauche(plat);
   mouv_bloquer.gauche = Test_Identique(plat, plat_test);
-  if (VERBOSE > 5) {printf("Mouvement_Haut bloqué !  ==> bloquer = %d\n", mouv_bloquer.gauche);}
+  if (VERBOSE > 5) {printf("Mouvement_Gauche bloqué !  ==> bloquer = %d\n", mouv_bloquer.gauche);}
 
   plat_test = Mouvement_Droite(plat);
   mouv_bloquer.droite = Test_Identique(plat, plat_test);
-  if (VERBOSE > 5) {printf("Mouvement_Haut bloqué !  ==> bloquer = %d\n", mouv_bloquer.droite);}
+  if (VERBOSE > 5) {printf("Mouvement_Droite bloqué !  ==> bloquer = %d\n", mouv_bloquer.droite);}
 
   return mouv_bloquer;  // stockage dans une scuture spécifique, car impossible de retourné plusieur variables
 }
