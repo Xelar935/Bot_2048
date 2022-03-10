@@ -667,7 +667,7 @@ int main(int argc, char const *argv[]) {
     Afficher_Logo();
     puts(YELLOW   "   Taper 1 pour lancer le BOT de résolution du 2048");
     puts(YELLOW   "   Taper 2 pour lancer une partie normal");
-    puts(YELLOW   "   Taper Q pour quitter le jeu");
+    puts(YELLOW   "   Taper E pour quitter le jeu");
     printf(YELLOW "   Choissiser vôtre mode de jeu :");
     scanf("%s" WHITE, action);
 
@@ -709,7 +709,7 @@ int main(int argc, char const *argv[]) {
 
           puts(YELLOW "Taper C pour continue");
           puts(YELLOW "Taper R pour relancer le BOT");
-          puts(YELLOW "Taper Q pour revenir au menu principal");
+          puts(YELLOW "Taper E pour revenir au menu principal");
           puts(YELLOW "Que voulez vous faire :");
           scanf("%c" WHITE, action);
 
@@ -728,7 +728,7 @@ int main(int argc, char const *argv[]) {
 
             for (int i = 0; i < 2  ; i++) {Plateau_1 = Ajout_New_Case(Plateau_1);} // permet de mettre les N premieres cases au lancement
         // #####################################################################
-          }else if (action[0] == 'Q' || action[0] == 'q') {
+        }else if (action[0] == 'E' || action[0] == 'e') {
             Jeu = false;
           }
 
@@ -743,7 +743,7 @@ int main(int argc, char const *argv[]) {
             printf(MAGENTA "                 Fin de partie\n");
             Afficher_Plateau(Plateau_1, 2 - win);
             printf(YELLOW "Taper R pour relancer le BOT \n");
-            printf(YELLOW "Taper Q pour revenir au menu principal \n");
+            printf(YELLOW "Taper E pour revenir au menu principal \n");
             printf(YELLOW "Que voulez vous faire :");
 
             scanf("%c" WHITE, action);
@@ -761,7 +761,7 @@ int main(int argc, char const *argv[]) {
 
               for (int i = 0; i < 2  ; i++) {Plateau_1 = Ajout_New_Case(Plateau_1);} // permet de mettre les N premieres cases au lancement
               // ###########################################################################
-            }else if (action[0] == 'Q' || action[0] == 'q') {
+            }else if (action[0] == 'E' || action[0] == 'e') {
               Jeu = false;
             }
 
@@ -795,30 +795,30 @@ int main(int argc, char const *argv[]) {
         system("clear");
 
         Afficher_Plateau(Plateau_1,0 + win);
-        if (bloquer.haut != true) {puts(YELLOW "    Taper H pour faire un mouvement vers le Haut");}
-        if (bloquer.bas != true) {puts(YELLOW "    Taper B pour faire un mouvement vers le Bas");}
-        if (bloquer.gauche != true) {puts(YELLOW "    Taper G pour faire un mouvement vers le Gauche");}
+        if (bloquer.haut != true) {puts(YELLOW "    Taper Z pour faire un mouvement vers le Haut");}
+        if (bloquer.bas != true) {puts(YELLOW "    Taper S pour faire un mouvement vers le Bas");}
+        if (bloquer.gauche != true) {puts(YELLOW "    Taper Q pour faire un mouvement vers le Gauche");}
         if (bloquer.droite != true) {puts(YELLOW "    Taper D pour faire un mouvement vers le Droite");}
         if (bloquer.retour != true) {puts(YELLOW "    Taper R pour faire un retour en arriere (possible une seule fois)");}
-        puts(YELLOW "    Taper Q pour quitter la partie");
+        puts(YELLOW "    Taper E pour quitter la partie");
         printf(YELLOW "    Entrez l'action que vous souhaitez réaliser : ");
         scanf("%s", action_joueur);
         puts("" WHITE);
 
-        if ((action_joueur[0] == 'H' || action_joueur[0] == 'h') && bloquer.haut != true) {
-          if (VERBOSE > 3) {puts("Entrer dans 'H' || 'h':");}
+        if ((action_joueur[0] == 'Z' || action_joueur[0] == 'z') && bloquer.haut != true) {
+          if (VERBOSE > 3) {puts("Entrer dans 'Z' || 'z':");}
           Plateau_2 = Plateau_1;  // recupération de l'ancien plateau pour le retour en arriere
           Plateau_1 = Mouvement_Haut(Plateau_1);
           Plateau_1 = Ajout_New_Case(Plateau_1);
           bloquer.retour = false; // reset le retour en arriere
-        }else if ((action_joueur[0] == 'B' || action_joueur[0] == 'b') && bloquer.bas != true) {
-          if (VERBOSE > 3) {puts("Entrer dans 'B' || 'b':");}
+        }else if ((action_joueur[0] == 'S' || action_joueur[0] == 's') && bloquer.bas != true) {
+          if (VERBOSE > 3) {puts("Entrer dans 'S' || 's':");}
           Plateau_2 = Plateau_1;  // recupération de l'ancien plateau pour le retour en arriere
           Plateau_1 = Mouvement_Bas(Plateau_1);
           Plateau_1 = Ajout_New_Case(Plateau_1);
           bloquer.retour = false; // reset le retour en arriere
-        }else if ((action_joueur[0] == 'G' || action_joueur[0] == 'g') && bloquer.gauche != true) {
-          if (VERBOSE > 3) {puts("Entrer dans 'G' || 'g':");}
+        }else if ((action_joueur[0] == 'Q' || action_joueur[0] == 'q') && bloquer.gauche != true) {
+          if (VERBOSE > 3) {puts("Entrer dans 'Q' || 'q':");}
           Plateau_2 = Plateau_1;  // recupération de l'ancien plateau pour le retour en arriere
           Plateau_1 = Mouvement_Gauche(Plateau_1);
           Plateau_1 = Ajout_New_Case(Plateau_1);
@@ -833,8 +833,8 @@ int main(int argc, char const *argv[]) {
           if (VERBOSE > 3) {puts("Entrer dans 'R' || 'r':");}
           Plateau_1 = Plateau_2;
           bloquer.retour = true;
-        }else if (action_joueur[0] == 'Q' || action_joueur[0] == 'q') {
-          if (VERBOSE > 3) {puts("Entrer dans 'Q' || 'q':");}
+        }else if (action_joueur[0] == 'E' || action_joueur[0] == 'e') {
+          if (VERBOSE > 3) {puts("Entrer dans 'E' || 'e':");}
           printf(YELLOW "Etes-vous sûr de vouloir quitter la partie Y/N:");
           char quitter[1];
           scanf("%s", quitter);
@@ -847,7 +847,7 @@ int main(int argc, char const *argv[]) {
           puts(RED "Vous avez gagner BRAVO !!!!!!!");
           puts(YELLOW "Taper C pour continue");
           puts(YELLOW "Taper R pour rejouer");
-          puts(YELLOW "Taper Q pour revenir au menu principal");
+          puts(YELLOW "Taper E pour revenir au menu principal");
           printf("Que voulez vous faire :");
           scanf("%c", action);
 
@@ -865,7 +865,7 @@ int main(int argc, char const *argv[]) {
             for (int i = 0; i < 2  ; i++) {Plateau_1 = Ajout_New_Case(Plateau_1);} // permet de mettre les N premieres cases au lancement
             // ###########################################################################
             Plateau_2 = Plateau_1;
-          }else if (action[0] == 'Q' || action[0] == 'q') {
+          }else if (action[0] == 'E' || action[0] == 'e') {
             Jeu = false;
           }
         }
@@ -880,7 +880,7 @@ int main(int argc, char const *argv[]) {
             printf("Fin de partie\nVous aviez un score de : %d\n", Plateau_1.score);
             Afficher_Plateau(Plateau_1, 2);
             puts(YELLOW "Taper R pour rejouer");
-            puts(YELLOW "Taper Q pour revenir au menu principal");
+            puts(YELLOW "Taper E pour revenir au menu principal");
             printf("Que voulez vous faire :");
             scanf("%c", action);
 
@@ -898,7 +898,7 @@ int main(int argc, char const *argv[]) {
               for (int i = 0; i < 2  ; i++) {Plateau_1 = Ajout_New_Case(Plateau_1);} // permet de mettre les N premieres cases au lancement
               // ###########################################################################
               Plateau_2 = Plateau_1;
-            }else if (action[0] == 'Q' || action[0] == 'q') {
+            }else if (action[0] == 'E' || action[0] == 'e') {
               Jeu = false;
             }
           }
@@ -906,7 +906,7 @@ int main(int argc, char const *argv[]) {
 
       } // fin While (Jeux) (pour le joueur)
 
-    }else if(action[0] == 'Q' || action[0] == 'q'){
+    }else if(action[0] == 'E' || action[0] == 'e'){
       printf(YELLOW "Etes-vous sûr de vouloir quitter le jeux Y/N:");
       char quitter[1];
       scanf("%s", quitter);
