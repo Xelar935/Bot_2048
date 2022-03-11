@@ -24,10 +24,11 @@
 #define false 0
 #define true 1
 
-#define BOARD_ORD 5         // nombre de lignes
-#define BOARD_ABS 5         // nombre de colonnes
+#define BOARD_ORD 10         // nombre de lignes
+#define BOARD_ABS 10         // nombre de colonnes
 #define CASE_VIDE 0
-#define NOMBRE_ESSAI 170    // permet de choisir le nombre de partie que le bot va simuler a chaque mouvement pour pouvoir gagné
+#define NOMBRE_ESSAI 50    // permet de choisir le nombre de partie que le bot va simuler a chaque mouvement pour pouvoir gagné
+#define DELAY 100
 #define VERBOSE 0           // a utiliser pour afficher en detaille les etapes des déplacements avec 2 niveaux
 
 // ############################### A faire #####################################
@@ -41,6 +42,7 @@ typedef struct {
   int score;
   int niveau;
   int grille [BOARD_ORD] [BOARD_ABS];
+  int statut;
 } Plateau;
 
 typedef struct {
@@ -67,12 +69,12 @@ void Afficher_Logo(){
 }
 
 // Methode permettant d'afficher le plateau mis en parametre et un int pour afficher le plateau gagnant en vert et celui perdant en rouge
-void Afficher_Plateau(Plateau plat, int gagner_perdu){  // neutre = 0 // gagner = 1 // perdu = 2 //
+void Afficher_Plateau(Plateau plat){
 
   printf(MAGENTA "    Votre Score :%d\n" WHITE, plat.score);
   // ======================= Met la premieres ligne ============================
-  if (gagner_perdu == 1) { printf(GREEN "          ╔");
-  }else if (gagner_perdu == 2) { printf(RED "          ╔");
+  if (plat.statut == 1) { printf(GREEN "          ╔");
+  }else if (plat.statut == 2) { printf(RED "          ╔");
   }else { printf("          ╔"); }
 
   for (int abs = 0; abs < BOARD_ABS -1; abs++) { printf("═════╦"); }
@@ -84,8 +86,8 @@ void Afficher_Plateau(Plateau plat, int gagner_perdu){  // neutre = 0 // gagner 
     // ============== Met les lignes de separation intermediaire ===============
     if (ord %2 == 0) {
 
-      if (gagner_perdu == 1) { printf(GREEN "          ╠");
-      }else if (gagner_perdu == 2) { printf(RED "          ╠");
+      if (plat.statut == 1) { printf(GREEN "          ╠");
+      }else if (plat.statut == 2) { printf(RED "          ╠");
       }else { printf("          ╠"); }
 
       for (int abs = 0; abs < BOARD_ABS -1; abs++) { printf("═════╬"); }
@@ -94,99 +96,99 @@ void Afficher_Plateau(Plateau plat, int gagner_perdu){  // neutre = 0 // gagner 
     }
     // =========================================================================
     else if (ord %2 == 1) {
-      if (gagner_perdu == 1) { printf(GREEN "          ║" WHITE);
-      }else if (gagner_perdu == 2) { printf(RED "          ║" WHITE);
+      if (plat.statut == 1) { printf(GREEN "          ║" WHITE);
+      }else if (plat.statut == 2) { printf(RED "          ║" WHITE);
       }else { printf("          ║"); }
 
       for (int abs = 0; abs < BOARD_ABS; abs++) { // repetition pour toutes les cases sauf la derniere
         // ###### Choix de la couleur selon la puissance de 2 à afficher #######
         if (plat.grille [ord /2][abs] == CASE_VIDE) {
-          if (gagner_perdu == 1) { printf(GREEN "     ║" WHITE);
-          }else if (gagner_perdu == 2) { printf(RED "     ║" WHITE);
+          if (plat.statut == 1) { printf(GREEN "     ║" WHITE);
+          }else if (plat.statut == 2) { printf(RED "     ║" WHITE);
           }else { printf("     ║"); }
         }
         else if (plat.grille [ord /2][abs]%13 == 1) {
           printf(WHITE " 2^%d ", plat.grille [ord /2][abs]);
-          if (gagner_perdu == 1) { printf(GREEN "║" WHITE);
-          }else if (gagner_perdu == 2) { printf(RED "║" WHITE);
+          if (plat.statut == 1) { printf(GREEN "║" WHITE);
+          }else if (plat.statut == 2) { printf(RED "║" WHITE);
           }else { printf(WHITE "║"); }
         }
         else if (plat.grille [ord /2][abs]%13 == 2) {
           printf(YELLOW " 2^%d ", plat.grille [ord /2][abs]);
-          if (gagner_perdu == 1) { printf(GREEN "║" WHITE);
-          }else if (gagner_perdu == 2) { printf(RED "║" WHITE);
+          if (plat.statut == 1) { printf(GREEN "║" WHITE);
+          }else if (plat.statut == 2) { printf(RED "║" WHITE);
           }else { printf(WHITE "║"); }
         }
         else if (plat.grille [ord /2][abs]%13 == 3) {
           printf(CYAN " 2^%d ", plat.grille [ord /2][abs]);
-          if (gagner_perdu == 1) { printf(GREEN "║" WHITE);
-          }else if (gagner_perdu == 2) { printf(RED "║" WHITE);
+          if (plat.statut == 1) { printf(GREEN "║" WHITE);
+          }else if (plat.statut == 2) { printf(RED "║" WHITE);
           }else { printf(WHITE "║"); }
         }
         else if (plat.grille [ord /2][abs]%13 == 4) {
           printf(BLUE " 2^%d ", plat.grille [ord /2][abs]);
-          if (gagner_perdu == 1) { printf(GREEN "║" WHITE);
-          }else if (gagner_perdu == 2) { printf(RED "║" WHITE);
+          if (plat.statut == 1) { printf(GREEN "║" WHITE);
+          }else if (plat.statut == 2) { printf(RED "║" WHITE);
           }else { printf(WHITE "║"); }
         }
         else if (plat.grille [ord /2][abs]%14 == 5) {
           printf(GREEN " 2^%d ", plat.grille [ord /2][abs]);
-          if (gagner_perdu == 1) { printf(GREEN "║" WHITE);
-          }else if (gagner_perdu == 2) { printf(RED "║" WHITE);
+          if (plat.statut == 1) { printf(GREEN "║" WHITE);
+          }else if (plat.statut == 2) { printf(RED "║" WHITE);
           }else { printf(WHITE "║"); }
         }
         else if (plat.grille [ord /2][abs]%13 == 6) {
           printf(MAGENTA " 2^%d ", plat.grille [ord /2][abs]);
-          if (gagner_perdu == 1) { printf(GREEN "║" WHITE);
-          }else if (gagner_perdu == 2) { printf(RED "║" WHITE);
+          if (plat.statut == 1) { printf(GREEN "║" WHITE);
+          }else if (plat.statut == 2) { printf(RED "║" WHITE);
           }else { printf(WHITE "║"); }
         }
         else if (plat.grille [ord /2][abs]%13 == 7) {
           printf(RED " 2^%d ", plat.grille [ord /2][abs]);
-          if (gagner_perdu == 1) { printf(GREEN "║" WHITE);
-          }else if (gagner_perdu == 2) { printf(RED "║" WHITE);
+          if (plat.statut == 1) { printf(GREEN "║" WHITE);
+          }else if (plat.statut == 2) { printf(RED "║" WHITE);
           }else { printf(WHITE "║"); }
         }
         else if (plat.grille [ord /2][abs]%13 == 8) {
           printf(SURLIGNE_YELLOW " 2^%d " SURLIGNE_BLACK, plat.grille [ord /2][abs]);
-          if (gagner_perdu == 1) { printf(GREEN "║" WHITE);
-          }else if (gagner_perdu == 2) { printf(RED "║" WHITE);
+          if (plat.statut == 1) { printf(GREEN "║" WHITE);
+          }else if (plat.statut == 2) { printf(RED "║" WHITE);
           }else { printf(WHITE "║"); }
         }
         else if (plat.grille [ord /2][abs]%13 == 9) {
           printf(SURLIGNE_CYAN " 2^%d " SURLIGNE_BLACK, plat.grille [ord /2][abs]);
-          if (gagner_perdu == 1) { printf(GREEN "║" WHITE);
-          }else if (gagner_perdu == 2) { printf(RED "║" WHITE);
+          if (plat.statut == 1) { printf(GREEN "║" WHITE);
+          }else if (plat.statut == 2) { printf(RED "║" WHITE);
           }else { printf(WHITE "║"); }
         }
         else if (plat.grille [ord /2][abs]%13 ==10) {
           printf(SURLIGNE_BLUE " 2^%d" SURLIGNE_BLACK, plat.grille [ord /2][abs]);
-          if (gagner_perdu == 1) { printf(GREEN "║" WHITE);
-          }else if (gagner_perdu == 2) { printf(RED "║" WHITE);
+          if (plat.statut == 1) { printf(GREEN "║" WHITE);
+          }else if (plat.statut == 2) { printf(RED "║" WHITE);
           }else { printf(WHITE "║"); }
         }
         else if (plat.grille [ord /2][abs]%13 == 11) {
           printf(SURLIGNE_GREEN " 2^%d" SURLIGNE_BLACK, plat.grille [ord /2][abs]);
-          if (gagner_perdu == 1) { printf(GREEN "║" WHITE);
-          }else if (gagner_perdu == 2) { printf(RED " ║" WHITE);
+          if (plat.statut == 1) { printf(GREEN "║" WHITE);
+          }else if (plat.statut == 2) { printf(RED " ║" WHITE);
           }else { printf(WHITE "║"); }
         }
         else if (plat.grille [ord /2][abs]%13 == 12) {
           printf(SURLIGNE_MAGENTA " 2^%d" SURLIGNE_BLACK, plat.grille [ord /2][abs]);
-          if (gagner_perdu == 1) { printf(GREEN "║" WHITE);
-        }else if (gagner_perdu == 2) { printf(RED "║" WHITE);
+          if (plat.statut == 1) { printf(GREEN "║" WHITE);
+        }else if (plat.statut == 2) { printf(RED "║" WHITE);
           }else { printf(WHITE "║"); }
         }
         else if (plat.grille [ord /2][abs]%13 == 13) {
           printf(SURLIGNE_RED " 2^%d" SURLIGNE_BLACK, plat.grille [ord /2][abs]);
-          if (gagner_perdu == 1) { printf(GREEN "║" WHITE);
-          }else if (gagner_perdu == 2) { printf(RED "║" WHITE);
+          if (plat.statut == 1) { printf(GREEN "║" WHITE);
+          }else if (plat.statut == 2) { printf(RED "║" WHITE);
           }else { printf(WHITE "║"); }
         }
         else if (plat.grille [ord /2][abs]%13 == 14) {
           printf(SURLIGNE_BLACK " 2^%d" SURLIGNE_BLACK, plat.grille [ord /2][abs]);
-          if (gagner_perdu == 1) { printf(GREEN "║" WHITE);
-          }else if (gagner_perdu == 2) { printf(RED "║" WHITE);
+          if (plat.statut == 1) { printf(GREEN "║" WHITE);
+          }else if (plat.statut == 2) { printf(RED "║" WHITE);
           }else { printf(WHITE "║"); }
         }
         // #####################################################################
@@ -196,8 +198,8 @@ void Afficher_Plateau(Plateau plat, int gagner_perdu){  // neutre = 0 // gagner 
   }// fin for (deuxieme a avant derniere ligne)
 
   // ======================= Met la derniere ligne =============================
-  if (gagner_perdu == 1) { printf(GREEN "          ╚");
-  }else if (gagner_perdu == 2) { printf(RED "          ╚");
+  if (plat.statut == 1) { printf(GREEN "          ╚");
+  }else if (plat.statut == 2) { printf(RED "          ╚");
   }else { printf("          ╚"); }
 
   for (int abs = 0; abs < BOARD_ABS -1; abs++) { printf("═════╩"); }
@@ -303,7 +305,7 @@ Plateau Mouvement_Droite(Plateau plat){
     }
     if (VERBOSE > 5) {
       puts("Premier decalage de toutes les cases à droite:");
-      Afficher_Plateau(plat,0);
+      Afficher_Plateau(plat);
     }
 
   // ================== somme les cases ajdacentes identiques ===================
@@ -317,7 +319,7 @@ Plateau Mouvement_Droite(Plateau plat){
     }
     if (VERBOSE > 5) {
       puts("===> Somme :");
-      Afficher_Plateau(plat,0);
+      Afficher_Plateau(plat);
     }
 
   // =================== second décalage des cases à droite ===================
@@ -331,7 +333,7 @@ Plateau Mouvement_Droite(Plateau plat){
     }
     if (VERBOSE > 5) {
       puts("Second decalage de toutes les cases à droite :");
-      Afficher_Plateau(plat,0);
+      Afficher_Plateau(plat);
     }
   // ===========================================================================
   }
@@ -353,7 +355,7 @@ Plateau Mouvement_Gauche(Plateau plat){
     }
     if (VERBOSE > 5) {
       puts("Premier decalage de toutes les cases à gauche :");
-      Afficher_Plateau(plat,0);
+      Afficher_Plateau(plat);
     }
 
   // =================== somme des cases adjacentes égales =====================
@@ -367,7 +369,7 @@ Plateau Mouvement_Gauche(Plateau plat){
     }
     if (VERBOSE > 5) {
       puts("===> Somme :");
-      Afficher_Plateau(plat,0);
+      Afficher_Plateau(plat);
     }
 
   // =================== second décalage des cases à gauche ===================
@@ -381,7 +383,7 @@ Plateau Mouvement_Gauche(Plateau plat){
     }
     if (VERBOSE > 5) {
       puts("Second decalage de toutes les cases à gauche :");
-      Afficher_Plateau(plat,0);
+      Afficher_Plateau(plat);
     }
   // ===========================================================================
   }
@@ -403,7 +405,7 @@ Plateau Mouvement_Haut(Plateau plat){
     }
     if (VERBOSE > 5) {
       puts("Premier decalage de toutes les cases en haut :");
-      Afficher_Plateau(plat,0);
+      Afficher_Plateau(plat);
     }
 
   // =================== somme des cases adjacentes égales =====================
@@ -417,7 +419,7 @@ Plateau Mouvement_Haut(Plateau plat){
     }
     if (VERBOSE > 5) {
       puts("===> Somme :");
-      Afficher_Plateau(plat,0);
+      Afficher_Plateau(plat);
     }
 
   // ================ second décalage de toute les cases en haut ===============
@@ -431,7 +433,7 @@ Plateau Mouvement_Haut(Plateau plat){
     }
     if (VERBOSE > 5) {
       puts("Second decalage de toutes les cases en haut :");
-      Afficher_Plateau(plat,0);
+      Afficher_Plateau(plat);
     }
   // ===========================================================================
   }
@@ -453,7 +455,7 @@ Plateau Mouvement_Bas(Plateau plat){
     }
     if (VERBOSE > 5) {
       puts("Premier decalage de toutes les cases en bas :");
-      Afficher_Plateau(plat,0);
+      Afficher_Plateau(plat);
     }
 
   // =================== somme des cases adjacentes égales =====================
@@ -467,7 +469,7 @@ Plateau Mouvement_Bas(Plateau plat){
     }
     if (VERBOSE > 5) {
       puts("===> Somme :");
-      Afficher_Plateau(plat,0);
+      Afficher_Plateau(plat);
     }
 
   // ================ second décalage de toute les cases en bas ================
@@ -481,7 +483,7 @@ Plateau Mouvement_Bas(Plateau plat){
     }
     if (VERBOSE > 5) {
       puts("Second decalage de toutes les cases en bas :");
-      Afficher_Plateau(plat,0);
+      Afficher_Plateau(plat);
     }
   // ===========================================================================
   }
@@ -581,7 +583,7 @@ Plateau BOT_Resolution(Plateau plat){
             Jeu = false;
             if (VERBOSE == 2) {
               printf("Partie simulation terminer (défaite), score :%d\n", plat_simulation.score);
-              Afficher_Plateau(plat_simulation,1);
+              Afficher_Plateau(plat_simulation);
             }
           }
         }
@@ -609,13 +611,6 @@ Plateau BOT_Resolution(Plateau plat){
       } // fin While
     } // fin For 0 à NOMBRE_ESSAI
   } // fin for 0 a 3 (pour les 4 mouvements diff)
-
-  if (VERBOSE == 2) {
-    printf("score_haut = %d\n", score_haut);
-    printf("score_bas = %d\n", score_bas);
-    printf("score_gauche = %d\n", score_gauche);
-    printf("score_droite = %d\n", score_droite);
-  }
 
 // -------- division par NOMBRE_ESSAI pour avoir une moyenne de score ----------
   score_haut = score_haut/NOMBRE_ESSAI;
@@ -693,19 +688,19 @@ int main(int argc, char const *argv[]) {
       bool continu = false;
       while (Jeu == true) {
 
-        my_delay(200); // delai pour plus de lisibiliter pendant la presentation
+        my_delay(DELAY); // delai pour plus de lisibiliter pendant la presentation
         system("clear");
         Plateau_1 = BOT_Resolution(Plateau_1);
         Plateau_1 = Ajout_New_Case(Plateau_1);
 
-        Afficher_Plateau(Plateau_1,0 + win);
+        Afficher_Plateau(Plateau_1);
 
         win = Test_Victoire(Plateau_1);
         if (win == true && continu == false) {
           system("clear");
 
           printf(MAGENTA "                Fin de partie\n");
-          Afficher_Plateau(Plateau_1, 1);
+          Afficher_Plateau(Plateau_1);
 
           puts(YELLOW "Taper C pour continue");
           puts(YELLOW "Taper R pour relancer le BOT");
@@ -738,10 +733,11 @@ int main(int argc, char const *argv[]) {
         if (plateau_plein == true){
           bloquer = Test_Mouvement_Bloquer(Plateau_1);
           if(bloquer.haut == true && bloquer.bas == true && bloquer.gauche == true && bloquer.droite == true){
+            Plateau_1.statut = 2;
             system("clear");
 
             printf(MAGENTA "                 Fin de partie\n");
-            Afficher_Plateau(Plateau_1, 2 - win);
+            Afficher_Plateau(Plateau_1);
             printf(YELLOW "Taper R pour relancer le BOT \n");
             printf(YELLOW "Taper E pour revenir au menu principal \n");
             printf(YELLOW "Que voulez vous faire :");
@@ -752,6 +748,7 @@ int main(int argc, char const *argv[]) {
               // ############## Preparation du plateau avant le lancement ##################
               Plateau_1.niveau = 1;
               Plateau_1.score = 0;
+              Plateau_1.statut = 0;
               // Met toutes les cases du plateau en etats vide pour eviter les variables residuelles
               for (int ord = 0; ord < BOARD_ORD; ord++) {
                 for (int abs = 0; abs < BOARD_ABS; abs++) {
@@ -764,7 +761,6 @@ int main(int argc, char const *argv[]) {
             }else if (action[0] == 'E' || action[0] == 'e') {
               Jeu = false;
             }
-
           }
         }
 
@@ -778,6 +774,7 @@ int main(int argc, char const *argv[]) {
       // ############## Preparation du plateau avant le lancement ##################
       Plateau_1.niveau = 1;
       Plateau_1.score = 0;
+      Plateau_1.statut = 0;
       // Met toutes les cases du plateau en etats vide pour eviter les variables residuelles
       for (int ord = 0; ord < BOARD_ORD; ord++) {
         for (int abs = 0; abs < BOARD_ABS; abs++) {
@@ -794,7 +791,7 @@ int main(int argc, char const *argv[]) {
       while (Jeu == true) {
         system("clear");
 
-        Afficher_Plateau(Plateau_1,0 + win);
+        Afficher_Plateau(Plateau_1);
         if (bloquer.haut != true) {puts(YELLOW "    Taper Z pour faire un mouvement vers le Haut");}
         if (bloquer.bas != true) {puts(YELLOW "    Taper S pour faire un mouvement vers le Bas");}
         if (bloquer.gauche != true) {puts(YELLOW "    Taper Q pour faire un mouvement vers le Gauche");}
@@ -844,7 +841,9 @@ int main(int argc, char const *argv[]) {
         // Test si on a gagné
         win = Test_Victoire(Plateau_1);
         if (win == true) {
+          Plateau_1.statut = 1;
           puts(RED "Vous avez gagner BRAVO !!!!!!!");
+          Afficher_Plateau(Plateau_1);
           puts(YELLOW "Taper C pour continue");
           puts(YELLOW "Taper R pour rejouer");
           puts(YELLOW "Taper E pour revenir au menu principal");
@@ -855,6 +854,7 @@ int main(int argc, char const *argv[]) {
             // ############## Preparation du plateau avant le lancement ##################
             Plateau_1.niveau = 1;
             Plateau_1.score = 0;
+            Plateau_1.statut = 0;
             // Met toutes les cases du plateau en etats vide pour eviter les variables residuelles
             for (int ord = 0; ord < BOARD_ORD; ord++) {
               for (int abs = 0; abs < BOARD_ABS; abs++) {
@@ -875,10 +875,11 @@ int main(int argc, char const *argv[]) {
           bloquer = Test_Mouvement_Bloquer(Plateau_1);
 
           if(bloquer.haut == true && bloquer.bas == true && bloquer.gauche == true && bloquer.droite == true){
+            Plateau_1.statut = 2;
             system("clear");
 
             printf("Fin de partie\nVous aviez un score de : %d\n", Plateau_1.score);
-            Afficher_Plateau(Plateau_1, 2);
+            Afficher_Plateau(Plateau_1);
             puts(YELLOW "Taper R pour rejouer");
             puts(YELLOW "Taper E pour revenir au menu principal");
             printf("Que voulez vous faire :");
@@ -888,6 +889,7 @@ int main(int argc, char const *argv[]) {
               // ############## Preparation du plateau avant le lancement ##################
               Plateau_1.niveau = 1;
               Plateau_1.score = 0;
+              Plateau_1.statut = 0;
               // Met toutes les cases du plateau en etats vide pour eviter les variables residuelles
               for (int ord = 0; ord < BOARD_ORD; ord++) {
                 for (int abs = 0; abs < BOARD_ABS; abs++) {
